@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation Pair Scheduling</title>
+    <!-- Load Tailwind CSS for modern styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a clean, academic look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main Card Container -->
+    <div id="app-container" class="w-full max-w-xl bg-white p-8 md:p-10 rounded-xl shadow-2xl border border-gray-100">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Presentation Pair Registration</h1>
+        <p class="text-center text-gray-500 mb-8">Register your team, topic, and preferred presentation week.</p>
+
+        <!-- Message/Alert Area -->
+        <div id="message-box" class="hidden p-4 mb-6 rounded-lg text-sm transition-opacity duration-300"></div>
+        
+        <!-- Input Form -->
+        <form id="submission-form" onsubmit="submitData(event)" class="space-y-6">
+            
+            <!-- Student 1 Identity -->
+            <div class="space-y-4 border p-4 rounded-lg bg-indigo-50">
+                <p class="text-lg font-semibold text-indigo-700">Your Identity (Student 1)</p>
+                <div>
+                    <label for="firstName" class="block text-sm font-medium text-gray-700">Your First Name</label>
+                    <input type="text" id="firstName" name="stdFirstName" required
+                           class="mt-1 block w-full px-3 py-2 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="familyName" class="block text-sm font-medium text-gray-700">Your Family Name</label>
+                    <input type="text" id="familyName" name="stdFamilyName" required
+                           class="mt-1 block w-full px-3 py-2 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="group" class="block text-sm font-medium text-gray-700">Group Number</label>
+                    <input type="number" id="group" name="stdGroup" min="1" required
+                           class="mt-1 block w-full px-3 py-2 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Partner and Topic -->
+            <div class="space-y-4 border p-4 rounded-lg bg-gray-50">
+                <p class="text-lg font-semibold text-gray-700">Team and Topic Details</p>
+                <div>
+                    <label for="partnerName" class="block text-sm font-medium text-gray-700">Partner's Full Name (Student 2)</label>
+                    <input type="text" id="partnerName" name="partnerName" required
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                           placeholder="e.g., Mohammed Nasri">
+                </div>
+                <div>
+                    <label for="topicTitle" class="block text-sm font-medium text-gray-700">Topic Title</label>
+                    <input type="text" id="topicTitle" name="topicTitle" required
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                           placeholder="e.g., The Future of AI in Education">
+                </div>
+            </div>
+
+            <!-- Presentation Week Selector -->
+            <div class="space-y-4 border p-4 rounded-lg bg-green-50">
+                <p class="text-lg font-semibold text-green-700">Presentation Scheduling (Voluntary)</p>
+                <div>
+                    <label for="presentationWeek" class="block text-sm font-medium text-gray-700">Volunteer for an Early Week?</label>
+                    <select id="presentationWeek" name="presentationWeek" required
+                            class="mt-1 block w-full px-3 py-2 border border-green-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                        <option value="Not Volunteering" selected>I will present in the assigned final week.</option>
+                        <option value="Week 1">Volunteer for Week 1</option>
+                        <option value="Week 2">Volunteer for Week 2</option>
+                        <option value="Week 3">Volunteer for Week 3</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" id="submit-button"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out disabled:opacity-50">
+                Register Team & Topic
+            </button>
+        </form>
+
+        <p class="mt-6 text-xs text-gray-400 text-center">Registration data is submitted securely to a Google Sheet.</p>
+    </div>
+
+    <script>
+        // NOTE: ***IMPORTANT*** Replace this placeholder URL with your actual deployed Google Apps Script URL.
+        const GOOGLE_SCRIPT_URL ="https://script.google.com/macros/s/AKfycbwa8P1jQfOiXV16AfxA_g0lBWQKL45GftNdabi-m3TeZVHRd8fOPLL0li9Zr55rEI8L/exec"; 
+        
+        // --- Utility Functions ---
+
+        /**
+         * Displays a formatted message in the UI.
+         * @param {string} message - The text to display.
+         * @param {string} type - 'success', 'error', or 'yellow' (for info/loading).
+         */
+        function showMessage(message, type) {
+            const box = document.getElementById('message-box');
+            box.textContent = message;
+            box.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800');
+            
+            if (type === 'success') {
+                box.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                box.classList.add('bg-red-100', 'text-red-800');
+            } else { // Default to neutral/info 
+                box.classList.add('bg-yellow-100', 'text-yellow-800');
+            }
+            
+            // Auto-hide the message after 7 seconds
+            setTimeout(() => {
+                box.classList.add('hidden');
+            }, 7000); 
+        }
+        
+        /**
+         * Handles the form submission process, including network retry logic.
+         * @param {Event} event - The form submission event.
+         */
+        async function submitData(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('submission-form');
+            const button = document.getElementById('submit-button');
+
+            // --- 1. Prepare Data Payload ---
+            const formData = new FormData(form);
+            const data = {};
+            
+            // Collect all fields and ensure numerical types are correct
+            for (const [key, value] of formData.entries()) {
+                // Ensure group number is saved as a number/string, not just object.
+                data[key] = value.trim(); 
+            }
+
+            button.disabled = true;
+            button.textContent = "Registering...";
+            showMessage("Sending registration details...", 'yellow'); 
+
+            // --- 2. Send Data to Google Apps Script (Server-Side) ---
+            try {
+                // Exponential Backoff Implementation (3 retries)
+                for (let attempt = 0; attempt < 3; attempt++) {
+                    try {
+                        if (GOOGLE_SCRIPT_URL === "YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_URL_HERE") {
+                             throw new Error("Please update the GOOGLE_SCRIPT_URL variable in the code with your actual deployment URL.");
+                        }
+                        
+                        const response = await fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors', // CRITICAL for GAS Web App POST
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data)
+                        });
+                        
+                        // We must assume success due to 'no-cors' mode 
+                        console.log(`Submission attempt ${attempt + 1} successful (Network OK). Payload:`, data);
+                        showMessage("Team successfully registered! Please check the shared sheet to confirm your slot.", 'success');
+                        
+                        // Clear the form on successful send
+                        form.reset(); 
+                        return; // Exit function on success
+
+                    } catch (networkError) {
+                        console.error(`Attempt ${attempt + 1} failed:`, networkError);
+                        if (attempt < 2) {
+                            const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        } else {
+                            throw new Error("Failed to submit registration after multiple retries.");
+                        }
+                    }
+                }
+            } catch (finalError) {
+                console.error('Final Submission Error:', finalError);
+                showMessage(`Registration Failed: ${finalError.message}.`, 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = "Register Team & Topic";
+            }
+        }
+    </script>
+</body>
+</html>
