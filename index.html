@@ -1,115 +1,170 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Naoumi Solutions | Deadline Reached</title>
+    <title>Presentation Pair Scheduling</title>
+    <!-- Load Tailwind CSS for modern styling and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Basic Reset & Typography */
+        /* Custom font for a clean, academic look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            text-align: center;
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
         }
-
-        /* Container for content */
-        .container {
-            max-width: 90%;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Header Styling */
-        h1 {
-            color: #0056b3;
-            font-size: 2.2em;
-            margin-bottom: 5px;
-            padding-bottom: 10px;
-        }
-
-        /* Professor Title Style (The corrected element) */
-        h2.title {
-            color: #555; /* Slightly softer color */
-            font-size: 1.2em;
-            font-weight: normal;
-            margin-top: 0;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e0e0e0; /* Separator line */
-            padding-bottom: 10px;
-        }
-
-        /* Main Alert Message */
-        .alert-message {
-            color: #cc0000;
-            font-size: 1.8em;
-            font-weight: bold;
-            margin: 30px 0;
-            padding: 10px;
-            background-color: #ffebeb;
-            border-radius: 4px;
-        }
-
-        /* Contact Section */
-        p.contact {
-            font-size: 1.1em;
-            margin-top: 30px;
-        }
-
-        /* Email Link Styling */
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-        }
-
-        /* Mobile Optimization */
-        @media (max-width: 600px) {
-            .container {
-                margin: 20px auto;
-                padding: 15px;
-            }
-            h1 {
-                font-size: 1.8em;
-            }
-            h2.title {
-                font-size: 1.1em;
-            }
-            .alert-message {
-                font-size: 1.4em;
-            }
-        }
-
     </style>
 </head>
-<body>
+<body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="container">
-        <h1>Dr. Naoumi Solutions</h1>
-        
-        <h2 class="title">Your University Professor</h2>
+    <!-- Main Card Container -->
+    <div id="app-container" class="w-full max-w-xl bg-white p-8 md:p-10 rounded-xl shadow-2xl border border-gray-100">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Presentation Pair Registration</h1>
+        <p class="text-center text-gray-500 mb-8">Register your team, topic number, and preferred presentation week for Dr. Naoumi's ICT class.</p>
 
-        <div class="alert-message">
-            🛑 Deadline Reached! 🛑
-        </div>
+        <!-- Message/Alert Area -->
+        <div id="message-box" class="hidden p-4 mb-6 rounded-lg text-sm transition-opacity duration-300"></div>
 
-        <p class="contact">
-            For urgent inquiries or further assistance, please contact us:
-        </p>
-        <p class="contact-email">
-            <a href="mailto:naoumi.academic@gmail.com">naoumi.academic@gmail.com</a>
-        </p>
-        
+        <!-- Input Form -->
+        <form id="student-form" novalidate>
+            <!-- Section 1: Student Identity -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Your Identity (Student 1)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="stdFirstName" class="block text-sm font-medium text-gray-600 mb-1">First Name</label>
+                        <input type="text" id="stdFirstName" name="stdFirstName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Mohammed">
+                    </div>
+                    <div>
+                        <label for="stdFamilyName" class="block text-sm font-medium text-gray-600 mb-1">Family Name</label>
+                        <input type="text" id="stdFamilyName" name="stdFamilyName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Nasri">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label for="stdEmail" class="block text-sm font-medium text-gray-600 mb-1">University Email</label>
+                    <input type="email" id="stdEmail" name="stdEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., m.nasri@university.edu">
+                </div>
+            </div>
+
+            <!-- Section 2: Team and Topic -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Team and Topic Details</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="stdGroup" class="block text-sm font-medium text-gray-600 mb-1">Group Number</label>
+                        <select id="stdGroup" name="stdGroup" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>Select a Group</option>
+                            <option value="101">101</option>
+                            <option value="102">102</option>
+                            <option value="103">103</option>
+                            <option value="104">104</option>
+                            <option value="105">105</option>
+                            <option value="106">106</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="topicNumber" class="block text-sm font-medium text-gray-600 mb-1">Topic Number</label>
+                        <select id="topicNumber" name="topicNumber" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="" disabled selected>Select a Topic</option>
+                            <script>
+                                const topicSelect = document.getElementById('topicNumber');
+                                for (let i = 1; i <= 30; i++) {
+                                    topicSelect.innerHTML += `<option value="${i}">${i}</option>`;
+                                }
+                            </script>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label for="partnerName" class="block text-sm font-medium text-gray-600 mb-1">Partner's Name (Student 2)</label>
+                    <input type="text" id="partnerName" name="partnerName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Fatima Naceri">
+                </div>
+            </div>
+
+            <!-- Section 3: Scheduling -->
+            <div>
+                <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Presentation Scheduling (Voluntary)</h2>
+                <label for="presentationWeek" class="block text-sm font-medium text-gray-600 mb-1">Choose a Preferred Week</label>
+                <select id="presentationWeek" name="presentationWeek" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">No Preference</option>
+                    <option value="Week 1">Week 1</option>
+                    <option value="Week 2">Week 2</option>
+                    <option value="Week 3">Week 3</option>
+                </select>
+            </div>
+
+            <!-- Submission Button -->
+            <div class="mt-8">
+                <button type="submit" id="submit-button" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300">
+                    Register Presentation
+                </button>
+            </div>
+             <p class="text-xs text-gray-400 mt-4 text-center">Registration data is submitted securely to Dr. Naoumi database.</p>
+        </form>
     </div>
+
+    <script>
+        // --- THIS IS YOUR LIVE WEB APP URL ---
+        const GOOGLE_SCRIPT_URL =
+        'https://script.google.com/macros/s/AKfycbynjWMs7Pj5oX2CTqgGgt_Nc_smcgy3FGV1Cqu3HdIj1pYLX5Ea_PQewFAGDYRIPpe7/exec';
+        
+        const form = document.getElementById('student-form');
+        const submitButton = document.getElementById('submit-button');
+        const messageBox = document.getElementById('message-box');
+
+        function showMessage(text, isError = false) {
+            messageBox.textContent = text;
+            messageBox.className = `p-4 mb-6 rounded-lg text-sm transition-opacity duration-300 ${
+                isError 
+                ? 'bg-red-100 text-red-700' 
+                : 'bg-green-100 text-green-700'
+            }`;
+            messageBox.classList.remove('hidden');
+            setTimeout(() => messageBox.style.opacity = '1', 10);
+        }
+
+        function hideMessage() {
+            messageBox.style.opacity = '0';
+            setTimeout(() => messageBox.classList.add('hidden'), 300);
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            if (!form.checkValidity()) {
+                showMessage('Please fill out all required fields correctly.', true);
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            hideMessage();
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            if (data.presentationWeek === '') {
+                data.presentationWeek = 'no-volunteer';
+            }
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data),
+                });
+                showMessage('Registration successful! Your data has been recorded.', false);
+                form.reset();
+            } catch (error) {
+                console.error('Submission Error:', error);
+                showMessage('An error occurred. Please try again later.', true);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Register Presentation';
+            }
+        }
+
+        form.addEventListener('submit', handleFormSubmit);
+    </script>
+</body>
+</html>
